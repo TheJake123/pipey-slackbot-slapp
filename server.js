@@ -93,6 +93,10 @@ slapp.message('attachment', ['mention', 'direct_message'], (msg) => {
   })
 })
 
+slapp.event('message', (msg) => {
+	msg.say("thanks for inviting me!")
+})
+
 // Catch-all for any other responses not handled above
 slapp.message('.*', (msg) => {
     msg.say([':wave:', ':pray:', ':raised_hands:'])
