@@ -103,6 +103,15 @@ slapp.event('message', (msg) => {
     }
 })
 
+// connect to database
+db.connect((err) => {
+  if (err) {
+    return console.error('error connecting to database: ' + err.stack)
+  }
+
+  console.log('connected to database')
+});
+
 // attach Slapp to express server
 var server = slapp.attachToExpress(express())
 
