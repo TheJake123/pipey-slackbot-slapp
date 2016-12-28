@@ -14,7 +14,10 @@ var slapp = Slapp({
   convo_store: ConvoStore(),
   context: Context()
 })
-
+slapp.use((msg, next) => {
+  console.log(msg)
+  next()
+})
 //*********************************************
 // Setup different handlers for messages
 //*********************************************
@@ -91,7 +94,7 @@ slapp.message('attachment', ['mention', 'direct_message'], (msg) => {
 })
 
 // Catch-all for any other responses not handled above
-slapp.message('.*', ['direct_mention', 'direct_message', 'mention', 'ambient'], (msg) => {
+slapp.message('.*', (msg) => {
     msg.say([':wave:', ':pray:', ':raised_hands:'])
 })
 
