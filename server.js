@@ -91,7 +91,7 @@ slapp.message('attachment', ['mention', 'direct_message'], (msg) => {
 })
 
 // Catch-all for any other responses not handled above
-slapp.message('.*', ['direct_mention', 'direct_message'], (msg) => {
+slapp.message('.*', ['direct_mention', 'direct_message', 'mention', 'ambient'], (msg) => {
     msg.say([':wave:', ':pray:', ':raised_hands:'])
 })
 
