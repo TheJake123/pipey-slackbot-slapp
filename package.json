@@ -23,6 +23,6 @@
     "slapp-context-beepboop": "^1.1.0",
     "slapp-convo-beepboop": "^1.0.0",
     "standard": "^8.4.0",
-    "mysql":"^2.12.0""
+    "mysql": "^2.12.0"
   }
 }
