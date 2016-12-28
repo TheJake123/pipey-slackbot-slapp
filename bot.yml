@@ -2,15 +2,20 @@ name: Pipey
 description: A Slack bot for adding notes to deals in pipedrive via Slack
 avatar: resources/avatar.png
 config:
-  - name: LOG_LEVEL
-    friendly_name: Severity level to show for logging.
-    info: See https://docs.python.org/2/library/logging.html#levels
-    default: DEBUG
   - name: PIPEDRIVE_API_KEY
     friendly_name: Pipedrive API Key
     type: secret
     global: false
-  - name: DB_API_URL
-    friendly_name: Database API URL
-    default: api.pipedrive.com/v1/
+  - name: DB_HOST
+    friendly_name: Database host
     type: text
+  - name: DB_PORT
+    friendly_name: Database port
+    default: 3306
+    type: text
+  - name: DB_USER
+    friendly_name: Database username
+    type: text
+  - name: DB_PASSWORD
+    friendly_name: Database password
+    type: secret

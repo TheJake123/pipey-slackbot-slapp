@@ -4,9 +4,17 @@ const express = require('express')
 const Slapp = require('slapp')
 const ConvoStore = require('slapp-convo-beepboop')
 const Context = require('slapp-context-beepboop')
+const Mysql = require('mysql');
 
 // use `PORT` env var on Beep Boop - default to 3000 locally
 var port = process.env.PORT || 3000
+
+var db = Mysql.createConnection({
+	  host: process.env.DB_HOST,
+	  port: process.env.DB_PORT || 3306,
+	  user: process.env.DB_USER,
+	  password: process.env.DB_PASSWORD
+	});
 
 var slapp = Slapp({
   // Beep Boop sets the SLACK_VERIFY_TOKEN env var
