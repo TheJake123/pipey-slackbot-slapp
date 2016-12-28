@@ -1,4 +1,16 @@
-name: slappbot
-description: ☝️☝️ Check out the README ☝️☝️ in the repo for setup instructions. By the way, this is just the description in the bot.yml file - feel free to change it 😉
-avatar: .beepboop/avatar.png
-# To learn everything supported in the bot.yml file, visit https://beepboophq.com/docs/article/bot-yml
+name: Pipey
+description: A Slack bot for adding notes to deals in pipedrive via Slack
+avatar: resources/avatar.png
+config:
+  - name: LOG_LEVEL
+    friendly_name: Severity level to show for logging.
+    info: See https://docs.python.org/2/library/logging.html#levels
+    default: DEBUG
+  - name: PIPEDRIVE_API_KEY
+    friendly_name: Pipedrive API Key
+    type: secret
+    global: false
+  - name: DB_API_URL
+    friendly_name: Database API URL
+    default: api.pipedrive.com/v1/
+    type: text
