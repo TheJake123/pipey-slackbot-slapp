@@ -23,6 +23,9 @@
     "slapp-context-beepboop": "^1.1.0",
     "slapp-convo-beepboop": "^1.0.0",
     "standard": "^8.4.0",
-    "mysql": "^2.12.0"
+    "mysql": "^2.12.0",
+    "request": "^2.79.0",
+    "querystring"; "^0.2.0",
+    "pipedrive": "^2.1.4"
   }
 }

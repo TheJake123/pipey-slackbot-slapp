@@ -4,17 +4,17 @@ const express = require('express')
 const Slapp = require('slapp')
 const ConvoStore = require('slapp-convo-beepboop')
 const Context = require('slapp-context-beepboop')
-const Mysql = require('mysql');
+const Database = require('./database')
+const Pipedrive = require('pipedrive')
 
 // use `PORT` env var on Beep Boop - default to 3000 locally
 var port = process.env.PORT || 3000
-
-var db = Mysql.createConnection({
-	  host: process.env.DB_HOST,
-	  port: process.env.DB_PORT || 3306,
-	  user: process.env.DB_USER,
-	  password: process.env.DB_PASSWORD
-	});
+var db = new Database(
+			  process.env.DB_HOST,
+			  process.env.DB_PORT || 3306,
+			  process.env.DB_USER,
+			  process.env.DB_PASSWORD)
+var pd = new Pipedrive.Client(process.env.PIPEDRIVE_API_KEY)
 
 var slapp = Slapp({
   // Beep Boop sets the SLACK_VERIFY_TOKEN env var
@@ -84,8 +84,10 @@ slapp.message(/^(thanks|thank you)/i, ['mention', 'direct_message'], (msg) => {
 })
 
 // demonstrate returning an attachment...
-slapp.message('attachment', ['mention', 'direct_message'], (msg) => {
-  msg.say({
+slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) => {
+	var deal = db.getDealForChannel(text)
+	msg.say(`Found deal: $(deal)`)
+/*  msg.say({
     text: 'Check out this amazing attachment! :confetti_ball: ',
     attachments: [{
       text: 'Slapp is a robust open source library that sits on top of the Slack APIs',
@@ -94,23 +96,15 @@ slapp.message('attachment', ['mention', 'direct_message'], (msg) => {
       title_link: 'https://beepboophq.com/',
       color: '#7CD197'
     }]
-  })
+  })*/
 })
 
+// handle channel join
 slapp.event('message', (msg) => {
     if (msg.isBot() && msg.isMessage() && msg.body.event.subtype === 'channel_join') {
     	msg.say("thanks for inviting me!")
     }
 })
-
-// connect to database
-db.connect((err) => {
-  if (err) {
-    return console.error('error connecting to database: ' + err.stack)
-  }
-
-  console.log('connected to database')
-});
 
 // attach Slapp to express server
 var server = slapp.attachToExpress(express())
