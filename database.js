@@ -10,7 +10,7 @@ class Database {
 			  password: password
 			})
 		//connect to database
-		db.connect((err) => {
+		this.db.connect((err) => {
 		  if (err) {
 		    return console.error('error connecting to database: ' + err.stack)
 		  }
