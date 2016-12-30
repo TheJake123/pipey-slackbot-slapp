@@ -26,6 +26,7 @@
     "mysql": "^2.12.0",
     "request": "^2.79.0",
     "querystring": "^0.2.0",
-    "pipedrive": "^2.1.4"
+    "pipedrive": "^2.1.4",
+    "beepboop": "^1.1.1"
   }
 }
