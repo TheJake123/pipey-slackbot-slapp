@@ -6,6 +6,7 @@ const ConvoStore = require('slapp-convo-beepboop')
 const Context = require('slapp-context-beepboop')
 const Database = require('./database')
 const Pipedrive = require('pipedrive')
+const BeepBoop = require('beepboop')
 
 // use `PORT` env var on Beep Boop - default to 3000 locally
 var port = process.env.PORT || 3000
@@ -14,7 +15,23 @@ var db = new Database(
 			  process.env.DB_PORT || 3306,
 			  process.env.DB_USER,
 			  process.env.DB_PASSWORD)
-var pd = new Pipedrive.Client(process.env.PIPEDRIVE_API_KEY)
+var pdClients = {}
+
+var beepboop = BeepBoop.start()
+beepboop.on('open', function () {
+  console.log('connection to Beep Boop server opened')
+})
+beepboop.on('error', function (error) {
+  console.log('Error from Beep Boop connection: ', err)
+})
+beepboop.on('close', function (code, message) {
+  console.log('Connection to Beep Boop was closed')
+})
+beepboop.on('add_resource', function (message) {
+  console.log('Team added: ', message)
+  pdClients[message.resource.SlackTeamID] = new Pipedrive.Client(message.resource.PIPEDRIVE_API_KEY)
+  console.log('Pipedrive client created with API key: ', message.resource.PIPEDRIVE_API_KEY)
+})
 
 var slapp = Slapp({
   // Beep Boop sets the SLACK_VERIFY_TOKEN env var
