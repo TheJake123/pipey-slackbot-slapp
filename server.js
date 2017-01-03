@@ -138,7 +138,7 @@ slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) =>
 slapp.event('message', (msg) => {
     if (msg.isBot() && msg.isMessage() && msg.body.event.subtype === 'channel_join') {
     	msg.say("Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about...")
-    	var channelUid = `${msg.meta.team_id}::${this.meta.channel_id}`
+    	var channelUid = `${msg.meta.team_id}::${msg.meta.channel_id}`
     	var deal = db.getDealForChannel(channelUid)
     	if (deal !== -1) {
     		msg.say({
