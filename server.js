@@ -170,7 +170,7 @@ slapp.event('message', (msg) => {
     			deals.forEach((deal) => {
         			msg.say(`Found $(deal.title)`)
     			})
-    			msg.say("Done with searching")
+    			msg.say(`Done with searching for this channel $(msg.meta.team_id)::$(this.meta.channel_id)`)
     		})
     	}
     }
