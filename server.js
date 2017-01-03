@@ -35,7 +35,7 @@ var PDClient = function(apiKey) {
 	}
 }
 var beepboop = BeepBoop.start({
-	debug: true
+	debug: false
 	})
 beepboop.on('open', () => {
   console.log('connection to Beep Boop server opened')
@@ -138,10 +138,11 @@ slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) =>
 slapp.event('message', (msg) => {
     if (msg.isBot() && msg.isMessage() && msg.body.event.subtype === 'channel_join') {
     	msg.say("Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about...")
-    	var deal = db.getDealForChannel(`$(msg.meta.team_id)::$(this.meta.channel_id)`)
+    	var channelUid = `${msg.meta.team_id}::${this.meta.channel_id}`
+    	var deal = db.getDealForChannel(channelUid)
     	if (deal !== -1) {
     		msg.say({
-	    	    text: `It looks like you already linked this channel $(msg.meta.team_id)::$(this.meta.channel_id) to this pipedrive deal $(deal)`,
+	    	    text: `It looks like you already linked this channel ${channelUid} to this pipedrive deal ${deal}`,
 	    	    attachments: [{
 	    	    	"text": "Would you like to keep this deal linked or select a new deal?",
 		            "fallback": "You are unable to ",

@@ -21,6 +21,7 @@ class Database {
 	}
 
 	getDealForChannel(channel) {
+		console.log(`Querying db for channel ${channel}`)
 		var params = {channel: channel}
 		this.db.query('SELECT deal FROM channel_deal WHERE ? LIMIT 1', params, function(err, rows, fields) {
 			  if (err) throw err
@@ -30,6 +31,7 @@ class Database {
 	}
 
 	setDealForChannel(channel, deal) {
+		console.log(`Updating db for channel ${channel} with deal ${deal}`)
 		var params = [channel, deal, deal]
 		this.db.query('INSERT INTO channel_deal (channel, deal) VALUES(?,?) ON DUPLICATE KEY UPDATE deal=?', params, function(err, rows, fields) {
 			  if (err) throw err
