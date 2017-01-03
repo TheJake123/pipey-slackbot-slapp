@@ -23,6 +23,7 @@ class Database {
 		var params = {channel: channel}
 		this.db.query('SELECT deal FROM channel_deal WHERE ? LIMIT 1', params, function(err, rows, fields) {
 			  if (err) throw err
+			  if (!result.length) return -1
 			  return rows[0].deal
 			})
 	}

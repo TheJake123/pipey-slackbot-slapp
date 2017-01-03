@@ -17,6 +17,23 @@ var db = new Database(
 			  process.env.DB_PASSWORD)
 var pdClients = {}
 
+var PDClient = function(apiKey) {
+	this.apiKey = apiKey
+	this.pd = new Pipedrive.Client(apiKey)
+	this.searchDeals = function(name, callback) {
+		this.pd.SearchResults.field({
+		    term: name,
+		    exact_match: false,
+		    field_key: "title",
+		    field_type: "dealField",
+		    return_item_ids: true,
+		    limit: 10
+		}), (dealsListErr, dealsList) => {
+			if (dealsListErr) console.log(dealsListErr);
+			callback(dealsList)
+		}
+	}
+}
 var beepboop = BeepBoop.start({
 	debug: true
 	})
@@ -31,7 +48,7 @@ beepboop.on('close', (code, message) => {
 })
 beepboop.on('add_resource', (message) => {
   console.log('Team added: ', message)
-  pdClients[message.resource.SlackTeamID] = new Pipedrive.Client(message.resource.PIPEDRIVE_API_KEY)
+  pdClients[message.resource.SlackTeamID] = new PDClient(message.resource.PIPEDRIVE_API_KEY)
   console.log('Pipedrive client created with API key: ', message.resource.PIPEDRIVE_API_KEY)
 })
 var slapp = Slapp({
@@ -120,7 +137,42 @@ slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) =>
 // handle channel join
 slapp.event('message', (msg) => {
     if (msg.isBot() && msg.isMessage() && msg.body.event.subtype === 'channel_join') {
-    	msg.say("thanks for inviting me!")
+    	msg.say("Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about...")
+    	var deal = db.getDealForChannel(`$(msg.meta.team_id)::$(this.meta.channel_id)`)
+    	if (deal !== -1) {
+    		msg.say({
+	    	    text: `It looks like you already linked this channel $(msg.meta.team_id)::$(this.meta.channel_id) to this pipedrive deal $(deal)`,
+	    	    attachments: [{
+	    	    	"text": "Would you like to keep this deal linked or select a new deal?",
+		            "fallback": "You are unable to ",
+		            "callback_id": "relink",
+		            "color": "#3AA3E3",
+		            "attachment_type": "default",
+		            "actions": [
+		                {
+		                    "name": "keep",
+		                    "text": "Keep link to current deal",
+		                    "type": "button",
+		                    "value": "keep",
+		                    "type": "primary",
+		                },
+		                {
+		                    "name": "change",
+		                    "text": "Change deal",
+		                    "type": "button",
+		                    "value": "change"
+		                }
+		            ]
+    	    	}]
+    		})
+    	} else {
+    		deals = pdClients[msg.meta.team_id].searchDeals(msg.body.channel_name, (deals) => {
+    			deals.forEach((deal) => {
+        			msg.say(`Found $(deal.title)`)
+    			})
+    			msg.say("Done with searching")
+    		})
+    	}
     }
 })
 
