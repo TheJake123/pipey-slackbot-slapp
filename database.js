@@ -2,12 +2,13 @@ const Mysql = require('mysql')
 
 
 class Database {
-	constructor (host, port, user, password) {
+	constructor (host, port, user, password, database) {
 		this.db = Mysql.createConnection({
 			  host: host,
 			  port: port,
 			  user: user,
-			  password: password
+			  password: password,
+			  database : database || 'pipey'
 			})
 		//connect to database
 		this.db.connect((err) => {
