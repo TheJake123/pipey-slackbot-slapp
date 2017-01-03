@@ -17,22 +17,23 @@ var db = new Database(
 			  process.env.DB_PASSWORD)
 var pdClients = {}
 
-var beepboop = BeepBoop.start()
-beepboop.on('open', function () {
+var beepboop = BeepBoop.start({
+	debug: true
+	})
+beepboop.on('open', () => {
   console.log('connection to Beep Boop server opened')
 })
-beepboop.on('error', function (error) {
+beepboop.on('error', (error) => {
   console.log('Error from Beep Boop connection: ', err)
 })
-beepboop.on('close', function (code, message) {
+beepboop.on('close', (code, message) => {
   console.log('Connection to Beep Boop was closed')
 })
-beepboop.on('add_resource', function (message) {
+beepboop.on('add_resource', (message) => {
   console.log('Team added: ', message)
   pdClients[message.resource.SlackTeamID] = new Pipedrive.Client(message.resource.PIPEDRIVE_API_KEY)
   console.log('Pipedrive client created with API key: ', message.resource.PIPEDRIVE_API_KEY)
 })
-
 var slapp = Slapp({
   // Beep Boop sets the SLACK_VERIFY_TOKEN env var
   verify_token: process.env.SLACK_VERIFY_TOKEN,
