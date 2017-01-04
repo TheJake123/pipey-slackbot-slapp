@@ -5,8 +5,9 @@ const Slapp = require('slapp')
 const ConvoStore = require('slapp-convo-beepboop')
 const Context = require('slapp-context-beepboop')
 const Database = require('./database')
-const Pipedrive = require('pipedrive')
+const PDClient = require('./PDClient')
 const BeepBoop = require('beepboop')
+const messenger = require('./messenger')
 
 // use `PORT` env var on Beep Boop - default to 3000 locally
 var port = process.env.PORT || 3000
@@ -16,24 +17,6 @@ var db = new Database(
 			  process.env.DB_USER,
 			  process.env.DB_PASSWORD)
 var pdClients = {}
-
-var PDClient = function(apiKey) {
-	this.apiKey = apiKey
-	this.pd = new Pipedrive.Client(apiKey)
-	this.searchDeals = function(name, callback) {
-		this.pd.SearchResults.field({
-		    term: name,
-		    exact_match: false,
-		    field_key: "title",
-		    field_type: "dealField",
-		    return_item_ids: true,
-		    limit: 10
-		}), (dealsListErr, dealsList) => {
-			if (dealsListErr) console.log(dealsListErr);
-			callback(dealsList)
-		}
-	}
-}
 var beepboop = BeepBoop.start({
 	debug: false
 	})
@@ -49,7 +32,7 @@ beepboop.on('close', (code, message) => {
 beepboop.on('add_resource', (message) => {
   console.log('Team added: ', message)
   pdClients[message.resource.SlackTeamID] = new PDClient(message.resource.PIPEDRIVE_API_KEY)
-  console.log('Pipedrive client created with API key: ', message.resource.PIPEDRIVE_API_KEY)
+  console.log('Pipedrive client created')
 })
 var slapp = Slapp({
   // Beep Boop sets the SLACK_VERIFY_TOKEN env var
@@ -57,6 +40,7 @@ var slapp = Slapp({
   convo_store: ConvoStore(),
   context: Context()
 })
+
 //*********************************************
 // Setup different handlers for messages
 //*********************************************
@@ -121,7 +105,9 @@ slapp.message(/^(thanks|thank you)/i, ['mention', 'direct_message'], (msg) => {
 // demonstrate returning an attachment...
 slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) => {
 	var deal = db.getDealForChannel(text)
-	msg.say(`Found deal: $(deal)`)
+	if (deal !== -1) {
+		msg.say(`Found deal: $(deal)`)
+	}
 /*  msg.say({
     text: 'Check out this amazing attachment! :confetti_ball: ',
     attachments: [{
@@ -138,43 +124,26 @@ slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) =>
 slapp.event('message', (msg) => {
     if (msg.isBot() && msg.isMessage() && msg.body.event.subtype === 'channel_join') {
     	msg.say("Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about...")
-    	var channelUid = `${msg.meta.team_id}::${msg.meta.channel_id}`
-    	var deal = db.getDealForChannel(channelUid)
+    	var deal = db.getDealForChannel(msg.meta.channel_id)
     	if (deal !== -1) {
-    		msg.say({
-	    	    text: `It looks like you already linked this channel ${channelUid} to this pipedrive deal ${deal}`,
-	    	    attachments: [{
-	    	    	"text": "Would you like to keep this deal linked or select a new deal?",
-		            "fallback": "You are unable to ",
-		            "callback_id": "relink",
-		            "color": "#3AA3E3",
-		            "attachment_type": "default",
-		            "actions": [
-		                {
-		                    "name": "keep",
-		                    "text": "Keep link to current deal",
-		                    "type": "button",
-		                    "value": "keep",
-		                    "type": "primary",
-		                },
-		                {
-		                    "name": "change",
-		                    "text": "Change deal",
-		                    "type": "button",
-		                    "value": "change"
-		                }
-		            ]
-    	    	}]
-    		})
+    		msg.say(messenger.confirmRelink(deal))
     	} else {
     		deals = pdClients[msg.meta.team_id].searchDeals(msg.body.channel_name, (deals) => {
-    			deals.forEach((deal) => {
-        			msg.say(`Found $(deal.title)`)
-    			})
+    			msg.say(messenger.listDealOptions(deals))
     			msg.say(`Done with searching for this channel $(msg.meta.team_id)::$(this.meta.channel_id)`)
     		})
     	}
     }
+})
+
+slapp.action('link', 'choice', (msg, value) => {
+  msg.respond(msg.body.response_url, `${value} is a good choice!`)
+  console.log(JSON.stringify(msg))
+})
+
+slapp.action('relink', 'answer', (msg, value) => {
+  msg.respond(msg.body.response_url, `${value} is a good choice!`)
+  console.log(JSON.stringify(msg))
 })
 
 // attach Slapp to express server
