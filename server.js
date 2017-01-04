@@ -124,15 +124,17 @@ slapp.message('attachment', ['direct_mention', 'direct_message'], (msg, text) =>
 slapp.event('message', (msg) => {
     if (msg.isBot() && msg.isMessage() && msg.body.event.subtype === 'channel_join') {
     	msg.say("Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about...")
-    	var deal = db.getDealForChannel(msg.meta.channel_id)
-    	if (deal !== -1) {
-    		msg.say(messenger.confirmRelink(deal))
-    	} else {
-    		deals = pdClients[msg.meta.team_id].searchDeals(msg.body.channel_name, (deals) => {
-    			msg.say(messenger.listDealOptions(deals))
-    			msg.say(`Done with searching for this channel $(msg.meta.team_id)::$(this.meta.channel_id)`)
-    		})
-    	}
+    	db.getDealForChannel(msg.meta.channel_id, (deal) => {
+    		if (deal !== -1) {
+        		msg.say(messenger.confirmRelink(deal))
+        	} else {
+        		pdClients[msg.meta.team_id].searchDeals(msg.body.channel_name, (deals) => {
+        			msg.say(messenger.listDealOptions(deals))
+        			msg.say(`Done with searching for this channel $(msg.meta.team_id)::$(this.meta.channel_id)`)
+        		})
+        	}
+    	})
+    	
     }
 })
 
