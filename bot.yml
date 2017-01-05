@@ -2,8 +2,12 @@ name: Pipey
 description: A Slack bot for adding notes to deals in pipedrive via Slack
 avatar: resources/avatar.png
 config:
-  - name: PIPEDRIVE_API_KEY
-    friendly_name: Pipedrive API Key
+  - name: PIPEDRIVE_SUBDOMAIN
+    friendly_name: Your Pipedrive Subdomain
+    type: text
+    global: false
+  - name: PIPEDRIVE_API_TOKEN
+    friendly_name: Pipedrive API Token
     type: secret
     global: false
   - name: DB_HOST

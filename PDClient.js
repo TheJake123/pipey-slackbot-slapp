@@ -1,18 +1,31 @@
 const Pipedrive = require('pipedrive')
+const HOST = 'pipedrive.com/'
+const DEFAULT_LIMIT = 10
 
-var PDClient = function(apiKey) {
-	this.apiKey = apiKey
-	this.pd = new Pipedrive.Client(apiKey)
-	
-	this.searchDeals = function(name, callback) {
+class PDClient {
+	constructor (apiKey, subdomain) {
+		this.subdomain = subdomain
+		this.pd = new Pipedrive.Client(apiKey)
+		this.baseUrl = `https://${subdomain}.${HOST}`
+	}
+	searchDeals (name, start, limit, callback) {
+		if (typeof limit === 'function') {
+			callback = limit
+			limit = DEFAULT_LIMIT
+		} else if (typeof start === 'function') {
+			callback = start
+			limit = DEFAULT_LIMIT
+			start = 0
+		}
+		console.log(`Searching for pipedrive deal matching "${name}"`)
 		this.pd.SearchResults.getAll({
 		    term: name,
 		    item_type: "deal",
-		    start: 0,
-		    limit: 10
-		}, (dealsListErr, dealsList) => {
-			if (dealsListErr) console.log(dealsListErr);
-			callback(dealsList)
+		    start: start,
+		    limit: limit
+		}, (err, deals, additionalData) => {
+			if (err) console.error(err)
+			callback(deals, additionalData)
 		})
 	}
 }
