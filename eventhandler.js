@@ -20,6 +20,8 @@ class EventHandler {
 	}
 	
 	handleDealSearch(msg, searchTerm) {
+		console.log(JSON.stringify(msg))
+		console.log(searchTerm)
 		this.pd.searchDeals(searchTerm, (deals) => {
 			if (deals.length === 0) {
 				msg.say(messenger.noDealFound(searchTerm))
