@@ -103,7 +103,7 @@ slapp.event('message', (msg) => {
     }
 })
 
-slapp.command('/pipedrive', '', (msg, text) => {
+slapp.command('/pipedrive', '.*', (msg, text) => {
     handlers[msg.meta.team_id].handleDealSearch(msg, text)
 })
 

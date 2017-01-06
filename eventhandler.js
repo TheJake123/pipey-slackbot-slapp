@@ -2,6 +2,8 @@
  * http://usejsdoc.org/
  */
 const messenger = require('./messenger')
+const slack = require('slack')
+
 class EventHandler {
 	constructor (db, pd) {
 		this.db = db
@@ -14,14 +16,17 @@ class EventHandler {
     		if (deal !== -1) {
         		msg.say(messenger.relinkConfirmation(deal))
         	} else {
-        		this.handleDealSearch(msg, msg.body.channel_name)
+        		slack.channels.info({
+        		      token: msg.meta.bot_token || msg.meta.app_token,
+        		      channel: msg.meta.channel_id
+        		    }, (err, data) => {
+                		this.handleDealSearch(msg, data.channel.name)
+        		    })
         	}
     	})
 	}
 	
 	handleDealSearch(msg, searchTerm) {
-		console.log(JSON.stringify(msg))
-		console.log(searchTerm)
 		this.pd.searchDeals(searchTerm, (deals) => {
 			if (deals.length === 0) {
 				msg.say(messenger.noDealFound(searchTerm))
