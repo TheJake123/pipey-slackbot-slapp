@@ -4,23 +4,22 @@
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
-
+const styles = {
+		won: {
+			emoji: ":moneybag:",
+			color: "#43C35E"
+		},
+		lost: {
+			emoji: ":money_with_wings:",
+			color: "#F0ACAC"
+		},
+		open: {
+			emoji: "",
+			color: ""
+		}
+}
 class Messenger {
 	linkChoices(deals, searchTerm, baseUrl) {
-		const styles = {
-				won: {
-					emoji: ":moneybag:",
-					color: "#43C35E"
-				},
-				lost: {
-					emoji: ":money_with_wings:",
-					color: "#F0ACAC"
-				},
-				open: {
-					emoji: "",
-					color: ""
-				}
-		}
 		var attachments = []
 		deals.forEach((deal) => {
 			var status = deal.details.status
@@ -67,7 +66,7 @@ class Messenger {
     	    attachments: attachments
 		}
 	}
-	relinkConfirmation(deal) {
+	relinkConfirmation(deal, stage) {
 		return {
     	    text: `It looks like you already linked this channel to a deal in pipedrive`,
     	    attachments: [{
@@ -78,12 +77,12 @@ class Messenger {
 	            "fields":[
 	            	 {
 		                    "title": "Status",
-		                    "value": `${deal}`,
+		                    "value": `${styles[deal.status].emoji}${deal.status.capitalize()}`,
 		                    "short": true
 		                },
 						{
 							"title": "Stage",
-							"value": "",
+							"value": stage,
 							"short": true
 						}
 	            ],
@@ -126,12 +125,12 @@ class Messenger {
 	        "actions":[
 	            {
 	               "name":"alreadylinked",
-	               "text": ":heavy_check_mark:Deal Linked",
+	               "text": "✔Deal Linked",
 	               "type": "button",
 				   "style": "primary"
 	            }
 	         ],
-	        "text": ":link: Deal linked to this channel. You can now mention @pipey in any message to create a note in this deal."
+	        "text": `:link: Deal linked to this channel. You can now mention <@${originalMsg.meta.bot_user_id}> in any message to create a note in this deal.`
 		}]
 		return originalMsg
 	}

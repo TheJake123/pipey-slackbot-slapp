@@ -12,19 +12,15 @@ class EventHandler {
 	
 	handleChannelJoin(msg) {
 		msg.say(messenger.channelGreeting())
-    	this.db.getDealForChannel(msg.meta.global_channel_id, (deal) => {
-    		if (deal !== -1) {
-    			deal = this.pd.pd.Deals.get(deal, (err, deal) => {
-    				console.log(JSON.stringify(deal))
-            		msg.say(messenger.relinkConfirmation(deal))
+    	this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
+    		if (dealId !== -1) {
+    			this.pd.pd.Deals.get(dealId, (err, deal) => {
+    				this.pd.pd.Stage.get(deal.stage_id, (err, stage) => {
+                		msg.say(messenger.relinkConfirmation(deal, stage.id))
+    				})
     			})
         	} else {
-        		slack.channels.info({
-        		      token: msg.meta.bot_token || msg.meta.app_token,
-        		      channel: msg.meta.channel_id
-        		    }, (err, data) => {
-                		this.handleDealSearch(msg, data.channel.name)
-        		    })
+        		handleChannelNameSearch(msg)
         	}
     	})
 	}
@@ -45,6 +41,19 @@ class EventHandler {
 		var chosenAttachment = originalMsg.attachments[msg.body.attachment_id - 1]
 		var replacementMessage = messenger.channelLinked(originalMsg, chosenAttachment)
 		msg.respond(msg.body.response_url, replacementMessage)
+	}
+	
+	handleChannelNameSearch(msg) {
+		slack.channels.info({
+		      token: msg.meta.bot_token || msg.meta.app_token,
+		      channel: msg.meta.channel_id
+		    }, (err, data) => {
+		    	this.handleDealSearch(msg, data.channel.name)
+		    })
+	}
+	
+	handleMention(msg) {
+		msg.say(`I heard you <@${msg.meta.user_id}>`)
 	}
 }
 
