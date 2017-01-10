@@ -114,7 +114,7 @@ class Messenger {
 		return "Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about..."
 	}
 	
-	channelLinked(originalMsg, chosenAttachment) {
+	channelLinked(originalMsg, chosenAttachment, botUserId) {
 		console.log(JSON.stringify(chosenAttachment))
 		originalMsg.attachments = [{
 			"title": chosenAttachment.title,
@@ -130,7 +130,7 @@ class Messenger {
 				   "style": "primary"
 	            }
 	         ],
-	        "text": `:link: Deal linked to this channel. You can now mention <@${originalMsg.meta.bot_user_id}> in any message to create a note in this deal.`
+	        "text": `:link: Deal linked to this channel. You can now mention <@${botUserId}> in any message to create a note in this deal.`
 		}]
 		return originalMsg
 	}
