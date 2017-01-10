@@ -67,7 +67,7 @@ class Messenger {
     	    attachments: attachments
 		}
 	}
-	relinkConfirmation() {
+	relinkConfirmation(deal) {
 		return {
     	    text: `It looks like you already linked this channel to a deal in pipedrive`,
     	    attachments: [{
@@ -116,6 +116,7 @@ class Messenger {
 	}
 	
 	channelLinked(originalMsg, chosenAttachment) {
+		console.log(JSON.stringify(chosenAttachment))
 		originalMsg.attachments = [{
 			"title": chosenAttachment.title,
 			"title_link": chosenAttachment.title_link,

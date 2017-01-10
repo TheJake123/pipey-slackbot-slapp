@@ -15,6 +15,7 @@ class EventHandler {
     	this.db.getDealForChannel(msg.meta.global_channel_id, (deal) => {
     		if (deal !== -1) {
     			deal = this.pd.pd.Deals.get(deal, (err, deal) => {
+    				console.log(JSON.stringify(deal))
             		msg.say(messenger.relinkConfirmation(deal))
     			})
         	} else {
@@ -41,7 +42,7 @@ class EventHandler {
 	handleLink(msg, dealId) {
 		this.db.setDealForChannel(msg.meta.global_channel_id, dealId)
 		var originalMsg = msg.body.original_message
-		var chosenAttachment = originalMsg.attachments[msg.attachment_id] - 1
+		var chosenAttachment = originalMsg.attachments[msg.body.attachment_id - 1]
 		var replacementMessage = messenger.channelLinked(originalMsg, chosenAttachment)
 		msg.respond(msg.body.response_url, replacementMessage)
 	}
