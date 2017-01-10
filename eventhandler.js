@@ -74,7 +74,9 @@ class EventHandler {
 								name: "spiral_note_pad",
 							    channel: msg.meta.channel_id,
 							    timestamp: msg.body.event_ts
-							}, () => {})
+							}, (err) => {
+								console.log(err)
+							})
 					})
 				}
 			}
