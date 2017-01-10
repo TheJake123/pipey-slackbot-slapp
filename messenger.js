@@ -142,7 +142,7 @@ class Messenger {
 	dealKept(originalMsg) {
 		var chosenAttachment = originalMsg.attachments[0]
 		chosenAttachment.actions = []
-		chosenAttachment.text = ":white_check_mark: Keeping this deal linked. You can always change it by calling `/pipedrive [deal name]`"
+		chosenAttachment.text = ":white_check_mark: Keeping this deal linked. You can always change it by calling /pipedrive [deal name]"
 		originalMsg.attachments = [chosenAttachment]
 		return originalMsg
 	}
