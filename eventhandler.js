@@ -74,7 +74,7 @@ class EventHandler {
 								name: "spiral_note_pad",
 							    channel: msg.meta.channel_id,
 							    timestamp: msg.body.event_ts
-							})
+							}, () => {})
 					})
 				}
 			}
@@ -92,9 +92,6 @@ class EventHandler {
 			msg.respond(msg.body.response_url, messenger.unauthorized())
 			return
 		}
-		var originalMsg = msg.body.original_message
-		var replacementMessage = messenger.changingDeal(originalMsg)
-		msg.respond(msg.body.response_url, replacementMessage)
 		this.handleChannelNameSearch(msg)
 	}
 }

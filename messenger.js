@@ -146,11 +146,6 @@ class Messenger {
 		originalMsg.attachments = [chosenAttachment]
 		return originalMsg
 	}
-	
-	changingDeal(originalMsg) {
-		originalMsg.attachments = []
-		return originalMsg
-	}
 }
 
 module.exports = new Messenger()
