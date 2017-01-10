@@ -51,18 +51,24 @@ class EventHandler {
 	}
 	
 	handleMention(msg) {
-		msg.say(`I heard you <@${msg.meta.user_id}>`)
 		this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
 			if (dealId == -1) {
 				msg.say("I'm sorry, this channel is not linked to a deal in Pipedrive yet. You first need to configure this with `/pipedrive [deal name]`")
 			} else {
-				console.log(JSON.stringify(msg))
-				this.pd.addNote(dealId, "testnote", msg.meta.user_id, (err) => {
-					if (err)
-						msg.say(`Something went wrong: ${err}`)
-					else
-						msg.say("+:spiral_note_pad:") 
-				})
+				var note = msg.body.event.text.replace("@pipey", "").trim()
+				if (note != '') {
+					this.pd.addNote(dealId, note, msg.meta.user_id, (err) => {
+						if (err)
+							msg.say(`Something went wrong: ${err}`)
+						else
+							slack.reactions.add({
+								token: msg.meta.bot_token || msg.meta.app_token,
+								name: "spiral_note_pad",
+							    channel: msg.meta.channel_id,
+							    timestamp: msg.body.event_ts
+							})
+					})
+				}
 			}
 		})
 	}
@@ -77,7 +83,7 @@ class EventHandler {
 		var originalMsg = msg.body.original_message
 		var replacementMessage = messenger.changingDeal(originalMsg)
 		msg.respond(msg.body.response_url, replacementMessage)
-		handleChannelNameSearch(msg)
+		this.handleChannelNameSearch(msg)
 	}
 }
 

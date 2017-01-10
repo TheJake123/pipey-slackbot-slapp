@@ -73,7 +73,6 @@ slapp.action('link', 'choice', (msg, value) => {
 })
 
 slapp.action('relink', 'answer', (msg, value) => {
-    console.log(value)
     if (value == 'keep') {
         handlers[msg.meta.team_id].handleKeepDeal(msg)
     } else if (value == 'change') {
