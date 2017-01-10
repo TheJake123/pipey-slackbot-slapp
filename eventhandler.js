@@ -15,7 +15,7 @@ class EventHandler {
     	this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
     		if (dealId !== -1) {
     			this.pd.getDeal(dealId, true, (deal) => {
-    				msg.say(relinkConfirmation(deal))
+    				msg.say(messenger.relinkConfirmation(deal))
     			})
         	} else {
         		handleChannelNameSearch(msg)
@@ -52,6 +52,12 @@ class EventHandler {
 	
 	handleMention(msg) {
 		msg.say(`I heard you <@${msg.meta.user_id}>`)
+		slack.users.list({
+		      token: msg.meta.bot_token || msg.meta.app_token,
+		      channel: msg.meta.channel_id
+		    }, (err, data) => {
+		    	console.log(JSON.stringify(data))
+		    })
 	}
 }
 
