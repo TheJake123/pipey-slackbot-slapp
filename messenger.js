@@ -66,6 +66,14 @@ class Messenger {
     	    attachments: attachments
 		}
 	}
+	
+	unauthorized() {
+		return {
+		    "response_type": "ephemeral",
+		    "text": "I'm sorry, you are not authorized to do this",
+		}
+	}
+	
 	relinkConfirmation(deal, baseUrl) {
 		console.log(JSON.stringify(deal))
 		return {

@@ -15,6 +15,11 @@ class PDClient {
 		this.pd = new Pipedrive.Client(apiKey)
 		this.baseUrl = `https://${subdomain}.${HOST}`
 	}
+	
+	isAuthorized(slackUserId) {
+		return slackUserId in USERS
+	}
+	
 	searchDeals (name, start, limit, callback) {
 		if (typeof limit === 'function') {
 			callback = limit
@@ -53,7 +58,7 @@ class PDClient {
 	}
 	
 	addNote(dealId, note, authorSlackId, callback) {
-		if (!(authorSlackId in USERS))
+		if (!(this.isAuthorized(authorSlackId)))
 			callback(new Error('unauthorized'))
 		this.pd.Notes.add({
 			content: note,

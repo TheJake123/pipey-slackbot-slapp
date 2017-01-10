@@ -18,7 +18,7 @@ class EventHandler {
     				msg.say(messenger.relinkConfirmation(deal, this.pd.baseUrl))
     			})
         	} else {
-        		handleChannelNameSearch(msg)
+        		this.handleChannelNameSearch(msg)
         	}
     	})
 	}
@@ -34,6 +34,10 @@ class EventHandler {
 	}
 	
 	handleLink(msg, dealId) {
+		if (!this.pd.isAuthorized(msg.meta.user_id)) {
+			msg.respond(msg.body.response_url, messenger.unauthorized())
+			return
+		}
 		this.db.setDealForChannel(msg.meta.global_channel_id, dealId)
 		var originalMsg = msg.body.original_message
 		var chosenAttachment = originalMsg.attachments[msg.body.attachment_id - 1]
@@ -51,6 +55,10 @@ class EventHandler {
 	}
 	
 	handleMention(msg) {
+		if (!this.pd.isAuthorized(msg.meta.user_id)) {
+			msg.respond(msg.body.response_url, messenger.unauthorized())
+			return
+		}
 		this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
 			if (dealId == -1) {
 				msg.say("I'm sorry, this channel is not linked to a deal in Pipedrive yet. You first need to configure this with `/pipedrive [deal name]`")
@@ -80,6 +88,10 @@ class EventHandler {
 	}
 	
 	handleChangeLink(msg) {
+		if (!this.pd.isAuthorized(msg.meta.user_id)) {
+			msg.respond(msg.body.response_url, messenger.unauthorized())
+			return
+		}
 		var originalMsg = msg.body.original_message
 		var replacementMessage = messenger.changingDeal(originalMsg)
 		msg.respond(msg.body.response_url, replacementMessage)
