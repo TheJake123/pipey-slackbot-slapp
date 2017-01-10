@@ -14,10 +14,8 @@ class EventHandler {
 		msg.say(messenger.channelGreeting())
     	this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
     		if (dealId !== -1) {
-    			this.pd.pd.Deals.get(dealId, (err, deal) => {
-    				this.pd.pd.Stage.get(deal.stage_id, (err, stage) => {
-                		msg.say(messenger.relinkConfirmation(deal, stage.id))
-    				})
+    			this.pd.getDeal(dealId, true, (deal) => {
+    				msg.say(relinkConfirmation(deal))
     			})
         	} else {
         		handleChannelNameSearch(msg)

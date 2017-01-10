@@ -28,6 +28,26 @@ class PDClient {
 			callback(deals, additionalData)
 		})
 	}
+	getDeal(id, resolveStage, callback) {
+		if (typeof resolveStage === 'function') {
+			callback = resolveStage
+			resolveStage = false
+		}
+		this.pd.pd.Deals.get(dealId, (err, deal) => {
+			if (resolveStage) {
+				this.pd.pd.Stage.get(deal.stage_id, (err, stage) => {
+					deal.stage_name = stage.name
+					callback(deal)
+				})
+        	} else {
+        		callback(deal)
+        	}
+		})
+	}
+	
+	getStage(id, callback) {
+		
+	}
 }
 
 module.exports = PDClient

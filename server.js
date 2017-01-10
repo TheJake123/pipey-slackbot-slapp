@@ -54,7 +54,7 @@ slapp.use((msg, next) => {
 // "Conversation" flow that tracks state - kicks off when user says hi, hello or hey
 slapp.message('.*', ['mention', 'direct_mention'], (msg, text) => {
     if (!msg.isBot())
-        handleMention(msg)
+        handlers[msg.meta.team_id].handleMention(msg)
   })
 
 // handle channel join

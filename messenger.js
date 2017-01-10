@@ -66,7 +66,7 @@ class Messenger {
     	    attachments: attachments
 		}
 	}
-	relinkConfirmation(deal, stage) {
+	relinkConfirmation(deal) {
 		return {
     	    text: `It looks like you already linked this channel to a deal in pipedrive`,
     	    attachments: [{
@@ -82,7 +82,7 @@ class Messenger {
 		                },
 						{
 							"title": "Stage",
-							"value": stage,
+							"value": deal.stage_name,
 							"short": true
 						}
 	            ],
