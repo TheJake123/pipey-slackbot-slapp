@@ -102,6 +102,26 @@ class Messenger {
 	channelGreeting() {
 		return "Hey! Thanks for inviting me to this channel. I'll quickly check which Pipedrive deal this channel might be about..."
 	}
+	
+	channelLinked(originalMsg, chosenAttachment) {
+		originalMsg.attachments = [{
+			"title": chosenAttachment.title,
+			"title_link": chosenAttachment.title_link,
+	        "fallback": chosenAttachment.title,
+	        "color": chosenAttachment.color,
+	        "fields": chosenAttachment.fields,
+	        "actions":[
+	            {
+	               "name":"alreadylinked",
+	               "text": ":heavy_check_mark:Deal Linked",
+	               "type": "button",
+				   "style": "primary"
+	            }
+	         ],
+	        "text": ":link: Deal linked to this channel. You can now mention @pipey in any message to create a note in this deal."
+		}]
+		return originalMsg
+	}
 }
 
 module.exports = new Messenger()

@@ -27,7 +27,7 @@ class EventHandler {
 	}
 	
 	handleDealSearch(msg, searchTerm) {
-		this.pd.searchDeals(searchTerm, (deals) => {
+		this.pd.searchDeals(searchTerm, 0, 3, (deals) => {
 			if (deals.length === 0) {
 				msg.say(messenger.noDealFound(searchTerm))
 			} else {
@@ -38,7 +38,11 @@ class EventHandler {
 	
 	handleLink(msg, dealId) {
 		this.db.setDealForChannel(msg.meta.global_channel_id, dealId)
-		msg.respond(msg.body.response_url, `Set deal to ${dealId}`)
+		console.log(JSON.stringify(msg))
+		var originalMsg = msg.original_message
+		var chosenAttachment = originalMsg.attachments[msg.attachment_id] - 1
+		var replacementMessage = messenger.channelLinked(originalMsg, chosenAttachment)
+		msg.respond(msg.body.response_url, replacementMessage)
 	}
 }
 
