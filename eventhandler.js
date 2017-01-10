@@ -63,7 +63,7 @@ class EventHandler {
 			if (dealId == -1) {
 				msg.say("I'm sorry, this channel is not linked to a deal in Pipedrive yet. You first need to configure this with `/pipedrive [deal name]`")
 			} else {
-				var note = msg.body.event.text.replace("@pipey", "").trim()
+				var note = msg.body.event.text.replace(`<@${msg.meta.bot_user_id}>`, "").trim()
 				if (note != '') {
 					this.pd.addNote(dealId, note, msg.meta.user_id, (err) => {
 						if (err)
