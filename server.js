@@ -108,8 +108,6 @@ slapp.command('/pipedrive', '.*', (msg, text) => {
 })
 
 slapp.action('link', 'choice', (msg, value) => {
-    console.log(msg)
-    console.log(JSON.stringify(msg))
     handlers[msg.meta.team_id].handleLink(msg, value)
 })
 

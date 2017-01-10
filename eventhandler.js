@@ -40,8 +40,7 @@ class EventHandler {
 	
 	handleLink(msg, dealId) {
 		this.db.setDealForChannel(msg.meta.global_channel_id, dealId)
-		console.log(JSON.stringify(msg))
-		var originalMsg = msg.original_message
+		var originalMsg = msg.body.original_message
 		var chosenAttachment = originalMsg.attachments[msg.attachment_id] - 1
 		var replacementMessage = messenger.channelLinked(originalMsg, chosenAttachment)
 		msg.respond(msg.body.response_url, replacementMessage)
