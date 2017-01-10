@@ -69,12 +69,11 @@ class EventHandler {
 						if (err)
 							msg.say(`Something went wrong: ${err}`)
 						else
-							console.log(JSON.stringify(msg))
 							slack.reactions.add({
 								token: msg.meta.bot_token || msg.meta.app_token,
 								name: "spiral_note_pad",
 							    channel: msg.meta.channel_id,
-							    timestamp: msg.body.event_ts
+							    timestamp: msg.body.event.event_ts
 							}, (err) => {
 								console.log(err)
 							})
