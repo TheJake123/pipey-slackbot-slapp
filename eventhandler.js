@@ -52,12 +52,17 @@ class EventHandler {
 	
 	handleMention(msg) {
 		msg.say(`I heard you <@${msg.meta.user_id}>`)
-		slack.users.list({
-		      token: msg.meta.bot_token || msg.meta.app_token,
-		      channel: msg.meta.channel_id
-		    }, (err, data) => {
-		    	console.log(JSON.stringify(data))
-		    })
+		this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
+			if (dealId == -1) {
+				msg.say("I'm sorry, this channel is not linked to a deal in Pipedrive yet. You first need to configure this with `/pipedrive [deal name]`")
+			} else {
+				console.log(JSON.stringify(msg))
+				this.pd.addNote(dealId, "testnote", msg.meta.user_id, (err) => {
+					if (err)
+						msg.say(`Something went wrong: ${err}`)
+				})
+			}
+		})
 	}
 }
 

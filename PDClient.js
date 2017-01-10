@@ -2,11 +2,11 @@ const Pipedrive = require('pipedrive')
 const HOST = 'pipedrive.com/'
 const DEFAULT_LIMIT = 10
 const USERS = {
-	Coen: 594918,
-	Lucien: 594873,
-	Thisj: 1517385,
-	Pascal: 1092688,
-	Wouter: 594916
+	U02DP2WS2: 594918,
+	U02DM8GA5: 594873,
+	U1MNT226M: 1517385,
+	U0K766DT2: 1092688,
+	U02FYE0V2: 594916
 }
 class PDClient {
 	constructor (apiKey, subdomain) {
@@ -51,9 +51,14 @@ class PDClient {
 		})
 	}
 	
-	addNote(dealId, note, authorSlackId) {
+	addNote(dealId, note, authorSlackId, callback) {
 		if (!(authorSlackId in USERS))
-			throw new Error('unauthorized')
+			callback(new Error('unauthorized'))
+		pdClient.pd.Notes.add({
+			content: note,
+			deal_id: dealId,
+			user_id: USERS[authorSlackId]
+		}, callback)
 	}
 }
 
