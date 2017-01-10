@@ -66,10 +66,13 @@ class Messenger {
     	    attachments: attachments
 		}
 	}
-	relinkConfirmation(deal) {
+	relinkConfirmation(deal, baseUrl) {
+		console.log(JSON.stringify(deal))
 		return {
     	    text: `It looks like you already linked this channel to a deal in pipedrive`,
     	    attachments: [{
+    	    	"title": deal.title,
+    	    	"title_link": `${baseUrl}deal/${deal.id}`,
     	    	"text": "Would you like to keep this deal linked or select a new deal?",
 	            "fallback": "Relink channel?",
 	            "callback_id": "relink",
@@ -90,7 +93,7 @@ class Messenger {
 	            "actions": [
 	                {
 	                    "name": "answer",
-	                    "text": "Keep current deal linked",
+	                    "text": "Keep current deal",
 	                    "type": "button",
 	                    "value": "keep",
 	                    "style": "primary",
@@ -115,23 +118,29 @@ class Messenger {
 	}
 	
 	channelLinked(originalMsg, chosenAttachment, botUserId) {
-		console.log(JSON.stringify(chosenAttachment))
-		originalMsg.attachments = [{
-			"title": chosenAttachment.title,
-			"title_link": chosenAttachment.title_link,
-	        "fallback": chosenAttachment.title,
-	        "color": chosenAttachment.color,
-	        "fields": chosenAttachment.fields,
-	        "actions":[
-	            {
-	               "name":"alreadylinked",
-	               "text": "✔Deal Linked",
+		chosenAttachment.actions = [
+            	{
+	               "name": "void",
+	               "text": "✔ Deal Linked",
 	               "type": "button",
 				   "style": "primary"
 	            }
-	         ],
-	        "text": `:link: Deal linked to this channel. You can now mention <@${botUserId}> in any message to create a note in this deal.`
-		}]
+	         ]
+		chosenAttachment.text = `:link: Deal linked to this channel. You can now mention <@${botUserId}> in any message to create a note in this deal.`
+		originalMsg.attachments = [chosenAttachment]
+		return originalMsg
+	}
+	
+	dealKept(originalMsg) {
+		var chosenAttachment = originalMsg.attachments[0]
+		chosenAttachment.actions = []
+		chosenAttachment.text = ":white_check_mark: Keeping this deal linked"
+		originalMsg.attachments = [chosenAttachment]
+		return originalMsg
+	}
+	
+	changingDeal(originalMsg) {
+		originalMsg.attachments = []
 		return originalMsg
 	}
 }

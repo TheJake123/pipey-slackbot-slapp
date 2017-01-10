@@ -15,7 +15,7 @@ class EventHandler {
     	this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
     		if (dealId !== -1) {
     			this.pd.getDeal(dealId, true, (deal) => {
-    				msg.say(messenger.relinkConfirmation(deal))
+    				msg.say(messenger.relinkConfirmation(deal, this.pd.baseUrl))
     			})
         	} else {
         		handleChannelNameSearch(msg)
@@ -60,9 +60,24 @@ class EventHandler {
 				this.pd.addNote(dealId, "testnote", msg.meta.user_id, (err) => {
 					if (err)
 						msg.say(`Something went wrong: ${err}`)
+					else
+						msg.say("+:spiral_note_pad:") 
 				})
 			}
 		})
+	}
+	
+	handleKeepDeal(msg) {
+		var originalMsg = msg.body.original_message
+		var replacementMessage = messenger.dealKept(originalMsg)
+		msg.respond(msg.body.response_url, replacementMessage)
+	}
+	
+	handleChangeLink(msg) {
+		var originalMsg = msg.body.original_message
+		var replacementMessage = messenger.changingDeal(originalMsg)
+		msg.respond(msg.body.response_url, replacementMessage)
+		handleChannelNameSearch(msg)
 	}
 }
 

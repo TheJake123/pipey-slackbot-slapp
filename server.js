@@ -73,7 +73,12 @@ slapp.action('link', 'choice', (msg, value) => {
 })
 
 slapp.action('relink', 'answer', (msg, value) => {
-    handlers[msg.meta.team_id].handleChannelNameSearch(msg)
+    console.log(value)
+    if (value == 'keep') {
+        handlers[msg.meta.team_id].handleKeepDeal(msg)
+    } else if (value == 'change') {
+        handlers[msg.meta.team_id].handleChangeLink(msg)
+    }
 })
 
 // attach Slapp to express server

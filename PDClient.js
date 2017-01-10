@@ -6,7 +6,8 @@ const USERS = {
 	U02DM8GA5: 594873,
 	U1MNT226M: 1517385,
 	U0K766DT2: 1092688,
-	U02FYE0V2: 594916
+	U02FYE0V2: 594916,
+	U289X75FZ: 594918
 }
 class PDClient {
 	constructor (apiKey, subdomain) {
@@ -54,7 +55,7 @@ class PDClient {
 	addNote(dealId, note, authorSlackId, callback) {
 		if (!(authorSlackId in USERS))
 			callback(new Error('unauthorized'))
-		pdClient.pd.Notes.add({
+		this.pd.Notes.add({
 			content: note,
 			deal_id: dealId,
 			user_id: USERS[authorSlackId]
