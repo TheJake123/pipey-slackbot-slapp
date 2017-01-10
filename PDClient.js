@@ -33,9 +33,9 @@ class PDClient {
 			callback = resolveStage
 			resolveStage = false
 		}
-		this.pd.pd.Deals.get(dealId, (err, deal) => {
+		this.pd.Deals.get(dealId, (err, deal) => {
 			if (resolveStage) {
-				this.pd.pd.Stage.get(deal.stage_id, (err, stage) => {
+				this.pd.Stage.get(deal.stage_id, (err, stage) => {
 					deal.stage_name = stage.name
 					callback(deal)
 				})
