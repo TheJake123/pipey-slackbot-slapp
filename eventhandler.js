@@ -14,7 +14,9 @@ class EventHandler {
 		msg.say(messenger.channelGreeting())
     	this.db.getDealForChannel(msg.meta.global_channel_id, (deal) => {
     		if (deal !== -1) {
-        		msg.say(messenger.relinkConfirmation(deal))
+    			deal = this.pd.pd.Deals.get(deal, (err, deal) => {
+            		msg.say(messenger.relinkConfirmation(deal))
+    			})
         	} else {
         		slack.channels.info({
         		      token: msg.meta.bot_token || msg.meta.app_token,

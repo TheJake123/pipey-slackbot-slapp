@@ -72,9 +72,21 @@ class Messenger {
     	    text: `It looks like you already linked this channel to a deal in pipedrive`,
     	    attachments: [{
     	    	"text": "Would you like to keep this deal linked or select a new deal?",
-	            "fallback": "You are unable to change the channel-deal link",
+	            "fallback": "Relink channel?",
 	            "callback_id": "relink",
 	            "color": "#3AA3E3",
+	            "fields":[
+	            	 {
+		                    "title": "Status",
+		                    "value": `${deal}`,
+		                    "short": true
+		                },
+						{
+							"title": "Stage",
+							"value": "",
+							"short": true
+						}
+	            ],
 	            "attachment_type": "default",
 	            "actions": [
 	                {

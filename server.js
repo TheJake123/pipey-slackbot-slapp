@@ -108,12 +108,13 @@ slapp.command('/pipedrive', '.*', (msg, text) => {
 })
 
 slapp.action('link', 'choice', (msg, value) => {
+    console.log(msg)
+    console.log(JSON.stringify(msg))
     handlers[msg.meta.team_id].handleLink(msg, value)
 })
 
 slapp.action('relink', 'answer', (msg, value) => {
   msg.respond(msg.body.response_url, `${value} is a good choice!`)
-  console.log(JSON.stringify(msg))
 })
 
 // attach Slapp to express server
