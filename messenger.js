@@ -61,6 +61,11 @@ class Messenger {
 			}
 			attachments.push(attachment)
 		})
+		var lastAttachment = {
+			 "pretext": "The deal you're looking for isn't here? Try typing `/pipedrive [deal name]` to look for another deal",
+			 "mrkdwn_in": ["pretext"]
+	      }
+		attachments.push(lastAttachment)
 		return {
     	    text: `I found ${deals.length} deals matching _${searchTerm}_, which one would you like to link to this channel?`,
     	    attachments: attachments
@@ -142,7 +147,8 @@ class Messenger {
 	dealKept(originalMsg) {
 		var chosenAttachment = originalMsg.attachments[0]
 		chosenAttachment.actions = []
-		chosenAttachment.text = ":white_check_mark: Keeping this deal linked. You can always change it by calling /pipedrive [deal name]"
+		chosenAttachment.text = ":white_check_mark: Keeping this deal linked. You can always change it by calling `/pipedrive [deal name]`"
+		chosenAttachment.mrkdwn_in = ["text"]
 		originalMsg.attachments = [chosenAttachment]
 		return originalMsg
 	}
