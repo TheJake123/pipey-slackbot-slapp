@@ -139,17 +139,21 @@ class Messenger {
 				   "style": "primary"
 	            }
 	         ]
-		chosenAttachment.text = `:link: Deal linked to this channel. You can now mention <@${botUserId}> in any message to create a note in this deal.`
-		originalMsg.attachments = [chosenAttachment]
+		var lastAttachment = {
+				pretext: `:link: Deal linked to this channel. You can now mention <@${botUserId}> in any message to create a note in this deal.`,
+			} 
+		originalMsg.attachments = [chosenAttachment, lastAttachment]
 		return originalMsg
 	}
 	
 	dealKept(originalMsg) {
 		var chosenAttachment = originalMsg.attachments[0]
 		chosenAttachment.actions = []
-		chosenAttachment.text = ":white_check_mark: Keeping this deal linked. You can always change it by calling `/pipedrive [deal name]`"
-		chosenAttachment.mrkdwn_in = ["text"]
-		originalMsg.attachments = [chosenAttachment]
+		var lastAttachment = {
+			pretext: ":white_check_mark: Keeping this deal linked. You can always change it by calling `/pipedrive [deal name]`",
+			mrkdwn_in:["pretext"]
+		}
+		originalMsg.attachments = [chosenAttachment, lastAttachment]
 		return originalMsg
 	}
 }
