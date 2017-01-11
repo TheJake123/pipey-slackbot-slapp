@@ -24,6 +24,10 @@ class EventHandler {
 	}
 	
 	handleDealSearch(msg, searchTerm) {
+		if (!msg.isBot() && !this.pd.isAuthorized(msg.meta.user_id)) {
+			msg.respond(msg.body.response_url, messenger.unauthorized())
+			return
+		}
 		this.pd.searchDeals(searchTerm, 0, 3, (deals) => {
 			if (deals.length === 0) {
 				msg.say(messenger.noDealFound(searchTerm))
