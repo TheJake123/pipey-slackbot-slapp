@@ -51,7 +51,7 @@ class EventHandler {
 		if (!this.pd.isAuthorized(msg.meta.user_id)) {
 			return msg.respond(msg.body.response_url, messenger.unauthorized())
 		}
-		this.handleDealSearch(msg)
+		this.handleDealSearch(msg, text)
 	}
 	
 	handleChannelNameSearch(msg) {
