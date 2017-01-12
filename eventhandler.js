@@ -25,8 +25,7 @@ class EventHandler {
 	
 	handleDealSearch(msg, searchTerm) {
 		if (!msg.isBot() && !this.pd.isAuthorized(msg.meta.user_id)) {
-			msg.respond(msg.body.response_url, messenger.unauthorized())
-			return
+			return msg.respond(msg.body.response_url, messenger.unauthorized())
 		}
 		this.pd.searchDeals(searchTerm, 0, 3, (deals) => {
 			if (deals.length === 0) {
@@ -39,14 +38,19 @@ class EventHandler {
 	
 	handleLink(msg, dealId) {
 		if (!this.pd.isAuthorized(msg.meta.user_id)) {
-			msg.respond(msg.body.response_url, messenger.unauthorized())
-			return
+			return msg.respond(msg.body.response_url, messenger.unauthorized())
 		}
 		this.db.setDealForChannel(msg.meta.global_channel_id, dealId)
 		var originalMsg = msg.body.original_message
 		var chosenAttachment = originalMsg.attachments[msg.body.attachment_id - 1]
 		var replacementMessage = messenger.channelLinked(originalMsg, chosenAttachment, msg.meta.bot_user_id)
 		msg.respond(msg.body.response_url, replacementMessage)
+	}
+	
+	handleSearchCommand(msg, text) {
+		if (!this.pd.isAuthorized(msg.meta.user_id)) {
+			return msg.respond(msg.body.response_url, messenger.unauthorized())
+		}
 	}
 	
 	handleChannelNameSearch(msg) {
@@ -60,8 +64,7 @@ class EventHandler {
 	
 	handleMention(msg) {
 		if (!this.pd.isAuthorized(msg.meta.user_id)) {
-			msg.respond(msg.body.response_url, messenger.unauthorized())
-			return
+			return msg.respond(msg.body.response_url, messenger.unauthorized())
 		}
 		this.db.getDealForChannel(msg.meta.global_channel_id, (dealId) => {
 			if (dealId == -1) {
@@ -95,8 +98,7 @@ class EventHandler {
 	
 	handleChangeLink(msg) {
 		if (!this.pd.isAuthorized(msg.meta.user_id)) {
-			msg.respond(msg.body.response_url, messenger.unauthorized())
-			return
+			return msg.respond(msg.body.response_url, messenger.unauthorized())
 		}
 		this.handleChannelNameSearch(msg)
 	}

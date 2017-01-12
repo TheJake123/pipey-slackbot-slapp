@@ -66,7 +66,7 @@ slapp.event('message', (msg) => {
 })
 
 slapp.command('/pipedrive', '.*', (msg, text) => {
-    handlers[msg.meta.team_id].handleDealSearch(msg, text)
+    handlers[msg.meta.team_id].handleSearchCommand(msg, text)
 })
 
 slapp.action('link', 'choice', (msg, value) => {

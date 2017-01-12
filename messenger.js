@@ -75,6 +75,7 @@ class Messenger {
 	unauthorized() {
 		return {
 		    "response_type": "ephemeral",
+		    "replace_original": false,
 		    "text": "I'm sorry, you are not authorized to do this",
 		}
 	}
