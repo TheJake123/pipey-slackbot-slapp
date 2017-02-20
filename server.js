@@ -8,6 +8,9 @@ const Database = require('./database')
 const PDClient = require('./PDClient')
 const BeepBoop = require('beepboop')
 const EventHandler = require('./eventhandler')
+const bodyParser = require('body-parser')
+const parameters = require('parameters-middleware');
+const lang = require('langdetect');
 
 var app = express()
 
