@@ -98,17 +98,19 @@ app.post('/leads/pressrelease', parameters({
         res.status(410).send("Could not extract email")
     })
     .then(email => {
-        console.log(email)
-        var language = lang.detectOne(req.body.description)
-        console.log(language)
-        return db.addPRProspect({
-            language,
-            email,
-            source: req.body.source,
-            source_url: req.body.url,
-            source_title: req.body.title,
-            source_description: req.body.description
-        })
+        if (email) {
+	        console.log(email)
+	        var language = lang.detectOne(req.body.description)
+	        console.log(language)
+	        return db.addPRProspect({
+	            language,
+	            email,
+	            source: req.body.source,
+	            source_url: req.body.url,
+	            source_title: req.body.title,
+	            source_description: req.body.description
+	        })
+        }
     })
     .catch(err => {
         console.log(err)
