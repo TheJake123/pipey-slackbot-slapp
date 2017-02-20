@@ -118,10 +118,6 @@ app.post('/leads/pressrelease', parameters({
     
 })
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
-
 function extractOrEnrichEmail(text, originalUrl) {
     return new Promise((resolve, reject) => {
         var email = extractEmail(text)
