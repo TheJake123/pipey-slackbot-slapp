@@ -33,9 +33,19 @@ class Database {
 	setDealForChannel(channel, deal) {
 		console.log(`Updating db for channel ${channel} with deal ${deal}`)
 		var params = [channel, deal, deal]
-		this.db.query('INSERT INTO channel_deal (channel, deal) VALUES(?,?) ON DUPLICATE KEY UPDATE deal=?', params, function(err, rows, fields) {
+		this.db.query('INSERT INTO channel_deal (channel, deal) VALUES(?,?) ON DUPLICATE KEY UPDATE deal=?', params, function (err, rows, fields) {
 			  if (err) throw err
 			})
+	}
+	
+	addPRProspect(details) {
+		return new Promise((resolve, reject) => {
+			console.log(`Adding prospect ${details.email}`)
+			this.db.query('INSERT INTO pr_prospects_raw SET ?', details, (err, rows, fields) => {
+				if (err) return reject(err)
+				return resolve(rows)
+			})
+		})
 	}
 }
 

@@ -1,4 +1,7 @@
 const Pipedrive = require('pipedrive')
+const RATE_LIMIT = 90/10000 //90 calls per 10000 ms (10 seconds)
+const throttle = require('promise-ratelimit')(1 / RATE_LIMIT) //rateInMilliseconds
+
 const HOST = 'pipedrive.com/'
 const DEFAULT_LIMIT = 10
 const USERS = {
@@ -10,10 +13,56 @@ const USERS = {
 	U289X75FZ: 594918
 }
 class PDClient {
+	
 	constructor (apiKey, subdomain) {
 		this.subdomain = subdomain
 		this.pd = new Pipedrive.Client(apiKey)
 		this.baseUrl = `https://${subdomain}.${HOST}`
+		this.Deals = {
+			getAll: (params) => {
+				return new Promise((resolve, reject) => {
+					throttle().then(() => {
+						this.pd.Deals.getAll(params, (err, deals, additionalData) => {
+							if (err) return reject(err)
+							resolve({deals, additionalData})
+						})
+					})
+				})
+			},
+			get: (id) => {
+				return new Promise((resolve, reject) => {
+					throttle().then(() => {
+						this.pd.Deals.get(id, (err, deal) => {
+							if (err) return reject(err)
+							resolve(deal)
+						})
+					})
+				})
+			},
+			update: (id, params) => {
+				return new Promise((resolve, reject) => {
+					throttle().then(() => {
+						console.log(`Updating ${id}`)
+						this.pd.Deals.update(id, params, (err) => {
+							if (err) return reject(err)
+							resolve()
+						})
+					})
+				})
+			}
+		}
+		this.Persons = {
+			getAll: (params) => {
+				return new Promise((resolve, reject) => {
+					throttle().then(() => {
+						this.pd.Persons.getAll(params, (err, persons, additionalData) => {
+							if (err) return reject(err)
+							resolve({persons, additionalData})
+						})
+					})
+				})
+			}
+		}
 	}
 	
 	isAuthorized(slackUserId) {
@@ -65,6 +114,10 @@ class PDClient {
 			deal_id: dealId,
 			user_id: USERS[authorSlackId]
 		}, callback)
+	}
+	
+	generateReport() {
+		return this.reporter.createReport()
 	}
 }
 

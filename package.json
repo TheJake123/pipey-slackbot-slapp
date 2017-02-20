@@ -27,6 +27,10 @@
     "request": "^2.79.0",
     "querystring": "^0.2.0",
     "pipedrive": "^2.1.4",
-    "beepboop": "^1.1.1"
+    "beepboop": "^1.1.1",
+    "promise-ratelimit": "^0.0.3",
+    "langdetect":"^0.2.1",
+    "body-parser":"^1.16.1",
+    "parameters-middleware":"^0.1.0"
   }
 }

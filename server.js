@@ -9,6 +9,8 @@ const PDClient = require('./PDClient')
 const BeepBoop = require('beepboop')
 const EventHandler = require('./eventhandler')
 
+var app = express()
+
 // use `PORT` env var on Beep Boop - default to 3000 locally
 var port = process.env.PORT || 3000
 var db = new Database(
@@ -81,8 +83,70 @@ slapp.action('relink', 'answer', (msg, value) => {
     }
 })
 
+app.post('/leads/pressrelease', parameters({
+    body : ["url", "description", "title", "source"]
+  }),
+  (req, res)  => {
+    extractOrEnrichEmail(req.body.description, req.body.url)
+    .catch(err => {
+        console.log(err)
+        res.status(410).send("Could not extract email")
+    })
+    .then(email => {
+        console.log(email)
+        var language = lang.detectOne(req.body.description)
+        console.log(language)
+        return db.addPRProspect({
+            language,
+            email,
+            source: req.body.source,
+            source_url: req.body.url,
+            source_title: req.body.title,
+            source_description: req.body.description
+        })
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(409).send("Could not add prospect (they most likely already exist)")
+    })
+    .then(rows => {
+        res.send(`Prospect added to database`)
+    })
+    
+})
+
+http.createServer(app).listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+function extractOrEnrichEmail(text, originalUrl) {
+    return new Promise((resolve, reject) => {
+        var email = extractEmail(text)
+        if (!email) {
+            var enrichtmentUrl = `http://ftr.fivefilters.org/makefulltextfeed.php?url=${originalUrl}&max=1`
+            request(enrichtmentUrl, function (error, response, body) {
+                if (error || response.statusCode != 200) return reject(error)
+                email = extractEmail(body)
+                if (!email) {
+                    return reject("No email found")
+                } else {
+                    return resolve(email)
+                }
+            })
+        } else {
+            return resolve(email)
+        }
+    })
+}
+
+function extractEmail(text) {
+    var match = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/i) 
+    return match ? match[0] : null
+}
+
+
 // attach Slapp to express server
-var server = slapp.attachToExpress(express())
+var server = slapp.attachToExpress(app)
 
 // start http server
 server.listen(port, (err) => {
