@@ -11,6 +11,7 @@ const EventHandler = require('./eventhandler')
 const bodyParser = require('body-parser')
 const parameters = require('parameters-middleware');
 const lang = require('langdetect');
+var request = require('request')
 
 var app = express()
 app.use(bodyParser.json());
