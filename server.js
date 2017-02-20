@@ -13,7 +13,7 @@ const parameters = require('parameters-middleware');
 const lang = require('langdetect');
 
 var app = express()
-app.use(express.bodyParser());
+app.use(bodyParser.json());
 
 // use `PORT` env var on Beep Boop - default to 3000 locally
 var port = process.env.PORT || 3000
