@@ -20,7 +20,8 @@ var db = new Database(
 			  process.env.DB_HOST,
 			  process.env.DB_PORT || 3306,
 			  process.env.DB_USER,
-			  process.env.DB_PASSWORD)
+			  process.env.DB_PASSWORD,
+			  process.env.DB_NAME || 'pipey')
 var handlers = {}
 var beepboop = BeepBoop.start()
 beepboop.on('open', () => {

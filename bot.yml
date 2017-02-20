@@ -23,3 +23,6 @@ config:
   - name: DB_PASSWORD
     friendly_name: Database password
     type: secret
+  - name: DB_NAME
+    friendly_name: Database name
+    type: text

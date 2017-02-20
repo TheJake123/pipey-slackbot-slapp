@@ -8,7 +8,7 @@ class Database {
 			  port: port,
 			  user: user,
 			  password: password,
-			  database : database || 'pipey'
+			  database : database
 			})
 		//connect to database
 		this.db.connect((err) => {
