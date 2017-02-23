@@ -96,7 +96,7 @@ app.post('/leads/pressrelease', parameters({
     extractOrEnrichEmail(req.body.description, req.body.url)
     .catch(err => {
         console.log(err)
-        res.status(410).send("Could not extract email")
+        res.status(202).send("Could not extract email")
     })
     .then(email => {
         if (email) {
@@ -115,7 +115,7 @@ app.post('/leads/pressrelease', parameters({
     })
     .catch(err => {
         console.log(err)
-        res.status(409).send("Could not add prospect (they most likely already exist)")
+        res.status(202).send("Could not add prospect (they most likely already exist)")
     })
     .then(rows => {
         res.send(`Prospect added to database`)
